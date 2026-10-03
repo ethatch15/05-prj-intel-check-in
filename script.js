@@ -11,6 +11,14 @@ const emptyList = document.getElementById("emptyList");
 // Track Attendence
 let count = 0;
 const maxCount = 50;
+let teamCounts = { water: 0, zero: 0, power: 0 };
+let attendees = [];
+
+// Local storage key for saved check-in data
+const storageKey = "intelCheckInData";
+
+// Restore any saved counts and attendees when the page loads
+loadSavedData();
 
 
 // Handle Form Submission
@@ -37,9 +45,10 @@ form.addEventListener("submit", function(event) {
     progressBar.style.width = percentage;
 
     //Update Team counter
+    teamCounts[team]++;
     const teamCounter = document.getElementById(team + "Count");
     console.log(teamCounter);
-    teamCounter.textContent = parseInt(teamCounter.textContent) + 1;
+    teamCounter.textContent = teamCounts[team];
 
     // Show Welcome Message
     const message = `🎉 Welcome, ${name} from ${teamName}!`;
@@ -49,17 +58,11 @@ form.addEventListener("submit", function(event) {
     greeting.style.display = "block";
 
     // Add the attendee to the list (newest first)
-    const listItem = document.createElement("li");
-    listItem.className = "attendee-item " + team;
-    const nameSpan = document.createElement("span");
-    nameSpan.className = "attendee-name";
-    nameSpan.textContent = name;
-    const teamSpan = document.createElement("span");
-    teamSpan.className = "attendee-team";
-    teamSpan.textContent = teamName;
-    listItem.append(nameSpan, teamSpan);
-    attendeeList.prepend(listItem);
-    emptyList.style.display = "none";
+    attendees.push({ name: name, team: team, teamName: teamName });
+    addAttendeeToList(name, team, teamName);
+
+    // Save counts and attendees so they survive a refresh
+    saveData();
 
     // Celebrate when the attendance goal is reached
     if (count === maxCount) {
@@ -98,4 +101,69 @@ function celebrateGoal() {
     greeting.textContent = `🏆 Goal reached! ${maxCount} attendees checked in. ${winnerNames} ${winners.length > 1 ? "tie" : "wins"} with ${topCount} attendees!`;
     greeting.className = "success-message celebration-message";
     greeting.style.display = "block";
+}
+
+// Add one attendee row to the top of the list
+function addAttendeeToList(name, team, teamName) {
+    const listItem = document.createElement("li");
+    listItem.className = "attendee-item " + team;
+    const nameSpan = document.createElement("span");
+    nameSpan.className = "attendee-name";
+    nameSpan.textContent = name;
+    const teamSpan = document.createElement("span");
+    teamSpan.className = "attendee-team";
+    teamSpan.textContent = teamName;
+    listItem.append(nameSpan, teamSpan);
+    attendeeList.prepend(listItem);
+    emptyList.style.display = "none";
+}
+
+// Save the total count, team counts, and attendees to local storage
+function saveData() {
+    const data = {
+        count: count,
+        teamCounts: teamCounts,
+        attendees: attendees
+    };
+    try {
+        localStorage.setItem(storageKey, JSON.stringify(data));
+    } catch (error) {
+        console.warn("Could not save check-in data:", error);
+    }
+}
+
+// Load saved data from local storage and show it on the page
+function loadSavedData() {
+    let data = null;
+    try {
+        data = JSON.parse(localStorage.getItem(storageKey));
+    } catch (error) {
+        console.warn("Could not load check-in data:", error);
+    }
+    if (!data) {
+        return;
+    }
+
+    count = data.count || 0;
+    teamCounts = Object.assign({ water: 0, zero: 0, power: 0 }, data.teamCounts);
+    attendees = data.attendees || [];
+
+    // Total count and progress bar
+    attendeeCount.textContent = count;
+    progressBar.style.width = Math.round((count / maxCount) * 100) + "%";
+
+    // Team counts
+    Object.keys(teamCounts).forEach(function(team) {
+        document.getElementById(team + "Count").textContent = teamCounts[team];
+    });
+
+    // Attendee list (oldest first, so the newest ends up on top)
+    attendees.forEach(function(a) {
+        addAttendeeToList(a.name, a.team, a.teamName);
+    });
+
+    // Keep the celebration showing if the goal was already reached
+    if (count >= maxCount) {
+        celebrateGoal();
+    }
 }
