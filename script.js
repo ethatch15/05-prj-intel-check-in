@@ -4,6 +4,7 @@ const nameInput = document.getElementById("attendeeName");
 const teamSelect = document.getElementById("teamSelect");
 const greeting = document.getElementById("greeting");
 const attendeeCount = document.getElementById("attendeeCount");
+const progressBar = document.getElementById("progressBar");
 
 // Track Attendence
 let count = 0;
@@ -31,6 +32,7 @@ form.addEventListener("submit", function(event) {
     //Update progress bar
     const percentage = Math.round((count / maxCount) * 100) + "%";
     console.log(`Progress: ${percentage}`);
+    progressBar.style.width = percentage;
 
     //Update Team counter
     const teamCounter = document.getElementById(team + "Count");
