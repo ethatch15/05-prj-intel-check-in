@@ -2,6 +2,7 @@
 const form = document.getElementById("checkInForm");
 const nameInput = document.getElementById("attendeeName");
 const teamSelect = document.getElementById("teamSelect");
+const greeting = document.getElementById("greeting");
 
 // Track Attendence
 let count = 0;
@@ -13,7 +14,7 @@ form.addEventListener("submit", function(event) {
     event.preventDefault();
 
     // Get form values
-    const name = nameInput.value;
+    const name = nameInput.value.trim();
     const team = teamSelect.value;
     const teamName = teamSelect.selectedOptions[0].text;
 
@@ -35,8 +36,11 @@ form.addEventListener("submit", function(event) {
     teamCounter.textContent = parseInt(teamCounter.textContent) + 1;
 
     // Show Welcome Message
-    const message = `Welcome ${name} from ${teamName}!`;
+    const message = `🎉 Welcome, ${name} from ${teamName}!`;
     console.log(message);
+    greeting.textContent = message;
+    greeting.className = "success-message";
+    greeting.style.display = "block";
 
     form.reset();
 });
