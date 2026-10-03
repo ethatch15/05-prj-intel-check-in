@@ -5,6 +5,8 @@ const teamSelect = document.getElementById("teamSelect");
 const greeting = document.getElementById("greeting");
 const attendeeCount = document.getElementById("attendeeCount");
 const progressBar = document.getElementById("progressBar");
+const attendeeList = document.getElementById("attendeeList");
+const emptyList = document.getElementById("emptyList");
 
 // Track Attendence
 let count = 0;
@@ -45,6 +47,19 @@ form.addEventListener("submit", function(event) {
     greeting.textContent = message;
     greeting.className = "success-message";
     greeting.style.display = "block";
+
+    // Add the attendee to the list (newest first)
+    const listItem = document.createElement("li");
+    listItem.className = "attendee-item " + team;
+    const nameSpan = document.createElement("span");
+    nameSpan.className = "attendee-name";
+    nameSpan.textContent = name;
+    const teamSpan = document.createElement("span");
+    teamSpan.className = "attendee-team";
+    teamSpan.textContent = teamName;
+    listItem.append(nameSpan, teamSpan);
+    attendeeList.prepend(listItem);
+    emptyList.style.display = "none";
 
     // Celebrate when the attendance goal is reached
     if (count === maxCount) {
