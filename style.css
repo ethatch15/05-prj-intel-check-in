@@ -258,6 +258,13 @@ button .fas {
   color: #003c71;
 }
 
+.celebration-message {
+  background-color: #fff8e1;
+  color: #7a5200;
+  font-weight: 700;
+  text-align: center;
+}
+
 /* Counter */
 #attendeeCount {
   color: #0071c5;
@@ -340,6 +347,14 @@ select {
 }
 .team-card.power {
   background-color: #fff7ed;
+}
+
+/* Winning team highlight */
+.team-card.winner {
+  outline: 3px solid #f5b800;
+  box-shadow: 0 0 0 6px rgba(245, 184, 0, 0.2);
+  transform: scale(1.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .team-name {

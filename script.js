@@ -46,5 +46,41 @@ form.addEventListener("submit", function(event) {
     greeting.className = "success-message";
     greeting.style.display = "block";
 
+    // Celebrate when the attendance goal is reached
+    if (count === maxCount) {
+        celebrateGoal();
+    }
+
     form.reset();
 });
+
+// Find the team(s) with the most attendees, highlight them, and celebrate
+function celebrateGoal() {
+    const teams = [
+        { id: "water", name: "Team Water Wise" },
+        { id: "zero", name: "Team Net Zero" },
+        { id: "power", name: "Team Renewables" }
+    ];
+
+    let topCount = 0;
+    teams.forEach(function(t) {
+        t.count = parseInt(document.getElementById(t.id + "Count").textContent);
+        topCount = Math.max(topCount, t.count);
+    });
+
+    const winners = teams.filter(function(t) {
+        return t.count === topCount;
+    });
+
+    winners.forEach(function(t) {
+        document.querySelector(".team-card." + t.id).classList.add("winner");
+    });
+
+    const winnerNames = winners.map(function(t) {
+        return t.name;
+    }).join(" & ");
+
+    greeting.textContent = `🏆 Goal reached! ${maxCount} attendees checked in. ${winnerNames} ${winners.length > 1 ? "tie" : "wins"} with ${topCount} attendees!`;
+    greeting.className = "success-message celebration-message";
+    greeting.style.display = "block";
+}
