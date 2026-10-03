@@ -3,6 +3,7 @@ const form = document.getElementById("checkInForm");
 const nameInput = document.getElementById("attendeeName");
 const teamSelect = document.getElementById("teamSelect");
 const greeting = document.getElementById("greeting");
+const attendeeCount = document.getElementById("attendeeCount");
 
 // Track Attendence
 let count = 0;
@@ -25,6 +26,7 @@ form.addEventListener("submit", function(event) {
     // Increment count
     count++;
     console.log("Total check-ins: " + count);
+    attendeeCount.textContent = count;
 
     //Update progress bar
     const percentage = Math.round((count / maxCount) * 100) + "%";
